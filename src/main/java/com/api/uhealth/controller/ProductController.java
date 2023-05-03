@@ -1,9 +1,11 @@
 package com.api.uhealth.controller;
 
 
+import com.api.uhealth.collections.Category;
 import com.api.uhealth.collections.Product;
 import com.api.uhealth.service.ProductService;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +23,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult result){
-        //Validar si hay un campo con algun error
-        if(result.hasErrors()){
-            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
-        }
-
-        Product productSave = productService.createProduct(product);
-        return new ResponseEntity<Product>(productSave, HttpStatus.CREATED);
-    }
 
     @GetMapping("/")
     public ResponseEntity<List<Product>> getProducts(){
@@ -41,18 +33,59 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id){
         Product product = productService.getProductById(id);
-        if(product == null){
-            return  ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(product);
     }
+
+    @GetMapping("/category/{categoryId}")
+    public  List<Product> getProductsByCategoryId(@PathVariable String categoryId){
+        return productService.getAllProductsByCategoryId(categoryId);
+    }
+
+    @PostMapping("/{categoryId}")
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product,@PathVariable String categoryId, BindingResult result){
+        //Validar si hay un campo con algun error
+        if(result.hasErrors()){
+            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+
+        // Validar si existe el campo
+        if(productService.findByProductName(product)){
+            return new ResponseEntity<>("El producto ya existe", HttpStatus.BAD_REQUEST);
+        }
+        //Validar Categoria
+        Category isCategory = productService.findCategoryById(categoryId);
+        if(isCategory == null){
+            return new ResponseEntity<>("La categoria no existe", HttpStatus.BAD_REQUEST);
+        }
+        product.setCategory(isCategory);
+        Product productSave = productService.createProduct(product);
+
+        return new ResponseEntity<Product>(productSave, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @Valid @RequestBody Product updatedProduct, BindingResult result) {
+        if(result.hasErrors()) {
+            // manejar errores de validación
+            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+        //Validar si existe el producto
+        Product isProduct = productService.getProductById(id);
+        if(isProduct == null){
+            return new ResponseEntity<>("EL producto no existe", HttpStatus.BAD_REQUEST);
+        }
+                                                        //Producto con nueva info, producto directamente desde la bd
+        Product productUpdated = productService.updateProduct(updatedProduct, isProduct);
+        return new ResponseEntity<Product>(productUpdated, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String id){
+        productService.deleteProduct(id);
+        return new ResponseEntity<>("Producto eliminado correctamente", HttpStatus.CREATED);
+    }
+
 
 
 }
 
-//        try{
-
-//            return productSave;
-//        }catch (Exception e){
-//            return new ResponseEntity<String>(e.getCause().toString(), HttpStatus.INTERNAL_SERVER_ERROR); // En caso de error getCause "Toma la causa"
-//        }

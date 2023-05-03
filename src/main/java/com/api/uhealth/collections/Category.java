@@ -21,7 +21,8 @@ public class Category {
 
 
     public Category(){} //Solucion al error: https://stackoverflow.com/questions/69538090/json-parse-error-cannot-construct-instance-of-although-at-least-one-creator-e
-    public Category(String categoryName) {
+    public Category(String id, String categoryName) {
+        this.id = id;
         this.categoryName = categoryName.toLowerCase().trim();
     }
 
@@ -38,6 +39,9 @@ public class Category {
     }
 
     public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+        this.categoryName =  categoryName.toLowerCase().trim();
     }
+
+
+
 }
