@@ -4,12 +4,16 @@ package com.api.uhealth.collections;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "user")
 public class User  {
@@ -43,6 +47,11 @@ public class User  {
     @DBRef
     private Profile profile;
 
+    @DBRef
+    private List<Routine> routines;
+
+
+
 
     public User( String username, String email, String password, String rolName) {
         this.username = username;
@@ -57,6 +66,14 @@ public class User  {
 //        this.rolName = rolName;
 //        this.profile = profile;
 //    }
+
+    public List<Routine> getRoutines() {
+        return routines;
+    }
+
+    public void setRoutines(List<Routine> routines) {
+        this.routines = routines;
+    }
 
     public String getId() {
         return id;

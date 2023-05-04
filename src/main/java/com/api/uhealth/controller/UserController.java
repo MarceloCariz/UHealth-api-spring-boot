@@ -2,15 +2,24 @@ package com.api.uhealth.controller;
 
 
 import com.api.uhealth.classes.LoginRequest;
+import com.api.uhealth.classes.RoutineRequestCreate;
+import com.api.uhealth.classes.RoutineRequestGetByDate;
+import com.api.uhealth.classes.RoutineRequestUpdate;
+import com.api.uhealth.collections.Routine;
 import com.api.uhealth.collections.User;
 import com.api.uhealth.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,12 +79,56 @@ public class UserController {
         return ResponseEntity.ok().body(userUpdated);
     }
 
-
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId){
         userService.deleteUser(userId);
         return ResponseEntity.ok().body("Usuario eliminado correctamente");
     }
+    //Rutina - Crear
+    @PostMapping("/routine/create")
+    public ResponseEntity<?> createRoutine(@Valid @RequestBody RoutineRequestCreate routineRequestCreate, BindingResult result){
+        if(result.hasErrors()) {
+            // manejar errores de validación
+            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+        Routine newRoutine = userService.createRoutine(routineRequestCreate);
+        return  ResponseEntity.ok().body(newRoutine);
+    }
+
+
+    @GetMapping("/routine/get/all/{userId}")
+    public ResponseEntity<?> getAllRoutine(@PathVariable String userId){
+        if(userService.findUserById(userId) == null){
+            return ResponseEntity.badRequest().body("Usuario no encontrado");
+        }
+
+        List<Routine> routines = userService.getAllRoutineByUserId(userId);
+
+        return ResponseEntity.ok().body(routines);
+    }
+
+    @PostMapping("/routine/get/all/date")
+    public ResponseEntity<?> getAllRoutinesByDate(@Valid @RequestBody RoutineRequestGetByDate routineRequestGetByDate){
+//        System.out.println(date);
+//        LocalDateTime dateFormmated = LocalDateTime.parse(date + "T00:00:00" + "%2B00:00");
+//        String fechaConHoraYOffset = fechaConHora.toString() + "%2B00:00";
+        List<Routine> routines = userService.getAllRoutinesByDate(routineRequestGetByDate);
+        return  ResponseEntity.ok().body(routines);
+    }
+
+    @PutMapping("/routine/update/{routineId}")
+    public ResponseEntity<?> updateRoutine(@PathVariable String routineId, @Valid @RequestBody RoutineRequestUpdate routineRequestUpdate){
+        Routine routine = userService.updateRoutineById(routineRequestUpdate, routineId);
+        return ResponseEntity.ok().body(routine);
+    }
+
+    @DeleteMapping("routine/delete/{routineId}")
+    public ResponseEntity<?> deleteRoutine(@PathVariable String routineId){
+        userService.DeleteRoutineById(routineId);
+        return ResponseEntity.ok().body("Rutina eliminada correctamente");
+    }
+
+
 
 
 }
