@@ -14,6 +14,7 @@ public class Category {
 
     @NotBlank
     @NotEmpty(message = "El nombre del debe tener al menos 3 caracteres") //Valida un string si esta vacio
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "El nombre de la categoria debe contener solo letras")
     @Size(min = 3, max = 10)
     @Indexed(unique = true)
     @Field("category_name")

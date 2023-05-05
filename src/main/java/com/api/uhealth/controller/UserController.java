@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -103,6 +102,10 @@ public class UserController {
         }
 
         List<Routine> routines = userService.getAllRoutineByUserId(userId);
+
+        if(routines.size() == 1 && routines.get(0) == null){
+            return ResponseEntity.ok().body(new ArrayList<>());
+        }
 
         return ResponseEntity.ok().body(routines);
     }

@@ -19,6 +19,7 @@ public class Product {
 
     @NotBlank
     @NotEmpty(message = "El nombre del debe tener al menos 3 caracteres") //Valida un string si esta vacio
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "El nombre del producto debe contener solo letras")
     @Size(min = 3, max = 20)
     @Indexed(unique = true)
     @Field("product_name")

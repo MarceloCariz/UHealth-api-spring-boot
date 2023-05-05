@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @PostMapping("/{categoryId}")
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product,@PathVariable String categoryId, BindingResult result){
+    public ResponseEntity<?> createProduct(@PathVariable String categoryId,@Valid @RequestBody Product product, BindingResult result){
         //Validar si hay un campo con algun error
         if(result.hasErrors()){
             return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
