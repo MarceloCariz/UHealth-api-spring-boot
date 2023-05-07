@@ -7,12 +7,17 @@ import com.api.uhealth.classes.RoutineRequestGetByDate;
 import com.api.uhealth.classes.RoutineRequestUpdate;
 import com.api.uhealth.collections.Routine;
 import com.api.uhealth.collections.User;
+import com.api.uhealth.security.JwtUtils;
 import com.api.uhealth.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +38,34 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Info jwt
+    @GetMapping("/refresh-token")
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+        // Aquí puedes procesar el token y obtener la información del usuario
+        String newToken = token.replace("Bearer ", "");
 
+        Claims userInfo = JwtUtils.extractUserInfoFromToken(newToken);
+        if (userInfo != null) {
+            String email = userInfo.getSubject();
+            String username = userInfo.get("nombre").toString();
+            String role = userInfo.get("role").toString();
+            Collection<? extends GrantedAuthority> roles = (Collection<? extends GrantedAuthority>) userInfo.get("roles");
+
+            // Generar el nuevo token con la información actualizada
+            String refreshedToken = JwtUtils.createToken(username, email, roles, role);
+            // Crear un objeto JSON que contenga el nuevo token y la información del usuario
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", refreshedToken);
+            response.put("email", email);
+            response.put("username", username);
+            response.put("role", role);
+            // Devolver la información del usuario en formato JSON
+            return ResponseEntity.ok(response);
+        } else {
+            // Devolver una respuesta de error si no se pudo obtener la información del usuario
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 
     @PostMapping("/login")
     public  ResponseEntity<?> Login(@RequestBody LoginRequest loginRequest){

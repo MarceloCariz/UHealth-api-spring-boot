@@ -46,7 +46,6 @@ public class JwtUtils {
     }
 
     public static UsernamePasswordAuthenticationToken getAuthentication(String token){
-        System.out.println("jwtUtils: token: " + token);
         try{
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(ACCESS_TOKEN_SECRET.getBytes())
@@ -55,7 +54,6 @@ public class JwtUtils {
                     .getBody();
 
             String email = claims.getSubject();
-            System.out.println("jwtUtils: email" + email);
             List<GrantedAuthority> authorities = new ArrayList<>();
 
             // Obtener roles/autoridades del token
@@ -66,6 +64,19 @@ public class JwtUtils {
             return new UsernamePasswordAuthenticationToken(email, null,authorities);
         }catch (JwtException e){
             System.out.println("erroe jwtutils:" + e);
+            return null;
+        }
+    }
+
+    public static Claims extractUserInfoFromToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(ACCESS_TOKEN_SECRET.getBytes())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException e) {
+            System.out.println("Error en JwtUtils: " + e.getMessage());
             return null;
         }
     }
