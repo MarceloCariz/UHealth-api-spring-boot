@@ -27,7 +27,7 @@ public class Product {
 
     @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
-    @PositiveOrZero(message = "Las calorias no pueden ser negativas")
+    @PositiveOrZero(message = "Las caloroías no pueden ser negativas")
     private float calories;
 
     @NotNull

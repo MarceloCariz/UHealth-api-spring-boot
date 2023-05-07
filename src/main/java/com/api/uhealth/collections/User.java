@@ -30,18 +30,18 @@ public class User  {
 
     @NotBlank
     @NotEmpty(message = "El nombre del debe tener al menos 3 caracteres")
-    @Email(message = "El email no es valido")
+    @Email(message = "El email no es válido")
     @Indexed(unique = true)
     private String email;
 
     @NotBlank
-    @NotEmpty(message = "La contraseña no debe estar vacia")
+    @NotEmpty(message = "La contraseña no debe estar vacía")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 8 , max = 20, message = "La contraseña debe ser de minimo 8 o un maximo de 20 caracteres")
+    @Size(min = 8 , max = 20, message = "La contraseña debe ser de mínimo 8 o un máximo de 20 caracteres")
     private String password;
 
     @NotBlank
-    @NotEmpty(message = "El rol no puede estar vacio")
+    @NotEmpty(message = "El rol no puede estar vacío")
     @Pattern(regexp = "^(usuario|administrador)$", message = "El campo role solo puede contener los valores 'usuario' o 'administrador'")
     private String rolName;
     @DBRef

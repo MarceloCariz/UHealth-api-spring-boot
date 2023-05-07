@@ -14,13 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +29,9 @@ public class UserService {
     private final RoutineRepository routineRepository;
 
     private final ProductRepository productRepository;
+
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Autowired
@@ -52,6 +50,10 @@ public class UserService {
 
 
     public User createUser(User user){
+        // Encriptar contrasena
+//        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+//        user.setPassword(encodedPassword);
+
         //crear perfil
         Profile newProfile = new Profile(0,0,0,0);
         profileRepository.save(newProfile);
@@ -134,6 +136,7 @@ public class UserService {
         routineFromDB.setDate(routineRequestUpdate.getDate());
         routineFromDB.setHorario(routineRequestUpdate.getHorario());
         routineFromDB.setProduct(newProduct);
+        //Guardar producto
         Routine routine = routineRepository.save(routineFromDB);
         return  routine;
      }

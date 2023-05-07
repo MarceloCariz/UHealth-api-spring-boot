@@ -24,7 +24,7 @@ public class Routine {
     private Date date;
 
     @NotBlank
-    @NotEmpty(message = "El horario no debe estar vacio")
+    @NotEmpty(message = "El horario no debe estar vacío")
     @Pattern(regexp = "^(mañana|tarde|noche)$", message = "El campo role solo puede contener los valores 'mañana','tarde' o 'noche'")
     private String horario;
 

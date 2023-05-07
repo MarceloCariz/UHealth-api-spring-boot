@@ -4,6 +4,7 @@ package com.api.uhealth.controller;
 import com.api.uhealth.collections.Category;
 import com.api.uhealth.collections.Product;
 import com.api.uhealth.service.ProductService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

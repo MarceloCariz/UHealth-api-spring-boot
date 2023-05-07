@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,8 @@ public class UserController {
             return ResponseEntity.badRequest().body("Correo o contraseña incorrecto");
         }
 
+
+
         return ResponseEntity.ok().body(isUser);
 
     }
@@ -52,6 +55,9 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
+
+
+    ///Crear usuario
     @PostMapping("/")
     public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result){
         //Validar si hay un campo con algun error
@@ -62,7 +68,6 @@ public class UserController {
         if(userService.getUserByEmail(user.getEmail()) != null){
             return ResponseEntity.badRequest().body("El usuario ya se encuentra registrado");
         }
-
         User userCreated = userService.createUser(user);
         return ResponseEntity.ok(userCreated);
     }
@@ -103,6 +108,7 @@ public class UserController {
 
         List<Routine> routines = userService.getAllRoutineByUserId(userId);
 
+        //si hay un unico elemento y este es null retorna un array vacio []
         if(routines.size() == 1 && routines.get(0) == null){
             return ResponseEntity.ok().body(new ArrayList<>());
         }
@@ -110,14 +116,7 @@ public class UserController {
         return ResponseEntity.ok().body(routines);
     }
 
-    @PostMapping("/routine/get/all/date")
-    public ResponseEntity<?> getAllRoutinesByDate(@Valid @RequestBody RoutineRequestGetByDate routineRequestGetByDate){
-//        System.out.println(date);
-//        LocalDateTime dateFormmated = LocalDateTime.parse(date + "T00:00:00" + "%2B00:00");
-//        String fechaConHoraYOffset = fechaConHora.toString() + "%2B00:00";
-        List<Routine> routines = userService.getAllRoutinesByDate(routineRequestGetByDate);
-        return  ResponseEntity.ok().body(routines);
-    }
+
 
     @PutMapping("/routine/update/{routineId}")
     public ResponseEntity<?> updateRoutine(@PathVariable String routineId, @Valid @RequestBody RoutineRequestUpdate routineRequestUpdate){
@@ -129,6 +128,14 @@ public class UserController {
     public ResponseEntity<?> deleteRoutine(@PathVariable String routineId){
         userService.DeleteRoutineById(routineId);
         return ResponseEntity.ok().body("Rutina eliminada correctamente");
+    }
+
+
+    @PostMapping("/routine/get/all/date")
+    public ResponseEntity<?> getAllRoutinesByDate(@Valid @RequestBody RoutineRequestGetByDate routineRequestGetByDate){
+
+        List<Routine> routines = userService.getAllRoutinesByDate(routineRequestGetByDate);
+        return  ResponseEntity.ok().body(routines);
     }
 
 
