@@ -38,6 +38,12 @@ public class UsersControllerTest {
 
     private static RestTemplate restTemplate;
 
+    private HttpHeaders httpHeaders;
+
+    private User testUser;
+
+    private HttpEntity<User>  requestUserEntity;
+
     @BeforeAll
     public static void init(){
         restTemplate = new RestTemplate();
@@ -62,33 +68,72 @@ public class UsersControllerTest {
     @BeforeEach
     public void setup(){
         baseUrl = baseUrl.concat(":").concat(port + "").concat("/user/");
+        userService = new UserService(userRepository, profileRepository, routineRepository, productRepository);
+        httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization", "Bearer " + token);
+        //Crear usuario de pruebas
+        User userDefault = new User("test", "test@correo.com", "12345678" , "usuario");
+        requestUserEntity = new HttpEntity<>(userDefault, httpHeaders);
+
+        testUser = restTemplate.postForObject(baseUrl ,requestUserEntity, User.class);
     }
+
+
+
+
 
 
     @DisplayName("JUnit test for create user method")
     @Test
-    @After()
     public void testCreateUser() {
 
-        User user = new User("test", "test@correo.com", "12345678" , "usuario");
-
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<User> requestEntity = new HttpEntity<>(user, headers);
-
-        User response = restTemplate.postForObject(baseUrl ,requestEntity, User.class);
-        ResponseEntity<Void> responseDelete = restTemplate.exchange(baseUrl + "/" + response.getId(), HttpMethod.DELETE, requestEntity, Void.class);
+        ResponseEntity<Void> responseDelete = restTemplate.exchange(baseUrl + "/" + testUser.getId(), HttpMethod.DELETE, requestUserEntity, Void.class);
 //        System.out.println(response.getBody());
         // Verificar email
-        assertEquals("test@correo.com", response.getEmail());
+        assertEquals("test@correo.com", testUser.getEmail());
         // Verificar username
-        assertEquals("test", response.getUsername());
+        assertEquals("test", testUser.getUsername());
         // Verificar rol
-        assertEquals("usuario" , user.getRolName());
+        assertEquals("usuario" , testUser.getRolName());
         // Verificar si se elimno
         assertEquals(HttpStatus.OK, responseDelete.getStatusCode());
 
+    }
 
+    @DisplayName("JUnit test for update user method")
+    @Test
+    public void testUpdateUser(){
+
+        /// Crear usuario a actualizar
+//        HttpEntity<User> requestEntity = new HttpEntity<>(testUser, httpHeaders);
+//
+//        User originalUser = restTemplate.postForObject(baseUrl ,requestEntity, User.class);
+
+
+        User modifiedUser = new User("modified", "modified@correo.com", "123456789" , "usuario");
+
+        HttpEntity<User> requestEntityModifedUser = new HttpEntity<>(modifiedUser, httpHeaders);
+        ResponseEntity<User> updatedUser = restTemplate.exchange(baseUrl  + testUser.getId(),HttpMethod.PUT , requestEntityModifedUser, User.class);
+
+
+        //eliminar
+        ResponseEntity<Void> response = restTemplate.exchange(baseUrl + testUser.getId(), HttpMethod.DELETE, requestUserEntity,  Void.class);
+
+//        System.out.println("uu"+updatedUser.getBody().getUsername() + "original" + originalUser.getUsername());
+        //Verficar que los username no son iguales
+        assertNotEquals(testUser.getUsername(), updatedUser.getBody().getUsername());
+        //Verficar que los emails no son iguales
+        assertNotEquals(testUser.getEmail(), updatedUser.getBody().getEmail());
+
+    }
+
+
+    @DisplayName("JUnit test for delete user method")
+    @Test
+    public void testDeleteUser(){
+        HttpEntity<?> requestEntity = new HttpEntity<>( httpHeaders);
+        ResponseEntity<Void> response = restTemplate.exchange(baseUrl + testUser.getId(), HttpMethod.DELETE, requestEntity,  Void.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

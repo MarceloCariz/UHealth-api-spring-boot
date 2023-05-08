@@ -68,17 +68,23 @@ public class UserService {
 
     public User updateUser(User userDatabase, User userToUpdate){
         Profile newProfile = profileRepository.findById(userDatabase.getProfile().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Perfil no encontrado"));;
-        // Asignar valores al perfil nuevo
-        newProfile.setAge(userToUpdate.getProfile().getAge());
-        newProfile.setWeight(userToUpdate.getProfile().getWeight());
-        newProfile.setHeight(userToUpdate.getProfile().getHeight());
-        newProfile.setImc(userToUpdate.getProfile().getWeight() /  (userToUpdate.getProfile().getHeight() * userToUpdate.getProfile().getHeight()) );
-        //Guardar en la bd el perfil actualizado
-        profileRepository.save(newProfile);
-        userDatabase.setProfile(newProfile);
+        if(userToUpdate.getProfile() != null){
+            // Asignar valores al perfil nuevo
+            newProfile.setAge(userToUpdate.getProfile().getAge());
+            newProfile.setWeight(userToUpdate.getProfile().getWeight());
+            newProfile.setHeight(userToUpdate.getProfile().getHeight());
+            newProfile.setImc(userToUpdate.getProfile().getWeight() /  (userToUpdate.getProfile().getHeight() * userToUpdate.getProfile().getHeight()) );
+            //Guardar en la bd el perfil actualizado
+            profileRepository.save(newProfile);
+            userDatabase.setProfile(newProfile);
+        }
+
         // Asignar atributos nuevos del usaurio
         userDatabase.setUsername(userToUpdate.getUsername());
         userDatabase.setEmail(userToUpdate.getEmail());
+        //Encriptar password
+        String encodedPassword = passwordEncoder.encode(userToUpdate.getPassword());
+        userDatabase.setPassword(encodedPassword);
         userDatabase.setRolName(userToUpdate.getRolName());
 
         return userRepository.save(userDatabase);
