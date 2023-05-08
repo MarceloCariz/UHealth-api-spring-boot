@@ -40,6 +40,8 @@ public class Profile {
         this.imc = imc;
     }
 
+    public Profile(){}
+
     public String getId() {
         return id;
     }

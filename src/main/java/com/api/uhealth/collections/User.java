@@ -36,7 +36,7 @@ public class User  {
 
     @NotBlank
     @NotEmpty(message = "La contraseña no debe estar vacía")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.READ_WRITE) // todo: descomentar esto, solo comentar por tests
     @Size(min = 8 , max = 20, message = "La contraseña debe ser de mínimo 8 o un máximo de 20 caracteres")
     private String password;
 
@@ -60,6 +60,8 @@ public class User  {
         this.rolName = rolName;
     }
 
+    public User(){}
+
 //    public User( String username, String email, String rolName, Profile profile) {
 //        this.username = username;
 //        this.email = email;
@@ -78,6 +80,8 @@ public class User  {
     public String getId() {
         return id;
     }
+
+
 
     public void setId(String id) {
         this.id = id;

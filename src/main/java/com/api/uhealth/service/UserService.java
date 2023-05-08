@@ -11,6 +11,8 @@ import com.api.uhealth.repository.RoutineRepository;
 import com.api.uhealth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,8 +32,8 @@ public class UserService {
 
     private final ProductRepository productRepository;
 
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Autowired
@@ -51,8 +53,8 @@ public class UserService {
 
     public User createUser(User user){
         // Encriptar contrasena
-//        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-//        user.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
 
         //crear perfil
         Profile newProfile = new Profile(0,0,0,0);
@@ -60,6 +62,7 @@ public class UserService {
         user.setProfile(newProfile);
         user.setRoutines(new ArrayList<>());
 
+        // Entrgar solo usuario generado
         return userRepository.save(user);
     }
 
