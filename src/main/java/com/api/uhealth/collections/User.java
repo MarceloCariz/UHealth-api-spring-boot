@@ -1,9 +1,7 @@
 package com.api.uhealth.collections;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "user")
+@JsonIgnoreProperties({"routines","profile"})
 public class User  {
 
     @Id
@@ -38,6 +37,7 @@ public class User  {
     @NotEmpty(message = "La contraseña no debe estar vacía")
 //    @JsonProperty(access = JsonProperty.Access.READ_WRITE) // todo: descomentar esto, solo comentar por tests
     @Size(min = 8 , max = 20, message = "La contraseña debe ser de mínimo 8 o un máximo de 20 caracteres")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank

@@ -1,14 +1,13 @@
 package com.api.uhealth.controller;
 
 
-import com.api.uhealth.classes.LoginRequest;
-import com.api.uhealth.classes.RoutineRequestCreate;
-import com.api.uhealth.classes.RoutineRequestGetByDate;
-import com.api.uhealth.classes.RoutineRequestUpdate;
+import com.api.uhealth.classes.*;
 import com.api.uhealth.collections.Routine;
 import com.api.uhealth.collections.User;
+import com.api.uhealth.interfaces.UserGet;
 import com.api.uhealth.security.JwtUtils;
 import com.api.uhealth.service.UserService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
@@ -84,7 +83,7 @@ public class UserController {
 
     }
     @GetMapping("/")
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserGet>> getAllUsers(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
@@ -105,7 +104,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable String userId, @Valid @RequestBody User userToUpdate, BindingResult result){
+    public ResponseEntity<?>  updateUser(@PathVariable String userId, @Valid @RequestBody  User userToUpdate, BindingResult result){
         if(result.hasErrors()) {
             // manejar errores de validación
             return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);

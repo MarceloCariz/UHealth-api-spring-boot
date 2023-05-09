@@ -4,14 +4,15 @@ package com.api.uhealth.service;
 import com.api.uhealth.classes.RoutineRequestCreate;
 import com.api.uhealth.classes.RoutineRequestGetByDate;
 import com.api.uhealth.classes.RoutineRequestUpdate;
+import com.api.uhealth.classes.UserRequestUpdate;
 import com.api.uhealth.collections.*;
+import com.api.uhealth.interfaces.UserGet;
 import com.api.uhealth.repository.ProductRepository;
 import com.api.uhealth.repository.ProfileRepository;
 import com.api.uhealth.repository.RoutineRepository;
 import com.api.uhealth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,8 +47,8 @@ public class UserService {
 
 
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserGet> getAllUsers(){
+        return userRepository.findAllBy();
     }
 
 
@@ -61,31 +62,35 @@ public class UserService {
         profileRepository.save(newProfile);
         user.setProfile(newProfile);
         user.setRoutines(new ArrayList<>());
+        User userCreated = userRepository.save(user);
 
         // Entrgar solo usuario generado
-        return userRepository.save(user);
+        return userCreated;
     }
 
     public User updateUser(User userDatabase, User userToUpdate){
-        Profile newProfile = profileRepository.findById(userDatabase.getProfile().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Perfil no encontrado"));;
-        if(userToUpdate.getProfile() != null){
-            // Asignar valores al perfil nuevo
-            newProfile.setAge(userToUpdate.getProfile().getAge());
-            newProfile.setWeight(userToUpdate.getProfile().getWeight());
-            newProfile.setHeight(userToUpdate.getProfile().getHeight());
-            newProfile.setImc(userToUpdate.getProfile().getWeight() /  (userToUpdate.getProfile().getHeight() * userToUpdate.getProfile().getHeight()) );
-            //Guardar en la bd el perfil actualizado
-            profileRepository.save(newProfile);
-            userDatabase.setProfile(newProfile);
-        }
+//        Profile newProfile = profileRepository.findById(userDatabase.getProfile().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Perfil no encontrado"));;
+//        if(userToUpdate.getProfile() != null){
+//            // Asignar valores al perfil nuevo
+//            newProfile.setAge(userToUpdate.getProfile().getAge());
+//            newProfile.setWeight(userToUpdate.getProfile().getWeight());
+//            newProfile.setHeight(userToUpdate.getProfile().getHeight());
+//            newProfile.setImc(userToUpdate.getProfile().getWeight() /  (userToUpdate.getProfile().getHeight() * userToUpdate.getProfile().getHeight()) );
+//            //Guardar en la bd el perfil actualizado
+//            profileRepository.save(newProfile);
+//            userDatabase.setProfile(newProfile);
+//        }
 
         // Asignar atributos nuevos del usaurio
         userDatabase.setUsername(userToUpdate.getUsername());
         userDatabase.setEmail(userToUpdate.getEmail());
-        //Encriptar password
-        String encodedPassword = passwordEncoder.encode(userToUpdate.getPassword());
-        userDatabase.setPassword(encodedPassword);
         userDatabase.setRolName(userToUpdate.getRolName());
+        //Encriptar password
+//        if(userToUpdate.getPassword() != null){
+//            String encodedPassword = passwordEncoder.encode(userToUpdate.getPassword());
+//            userDatabase.setPassword(encodedPassword);
+//        }
+
 
         return userRepository.save(userDatabase);
     }
