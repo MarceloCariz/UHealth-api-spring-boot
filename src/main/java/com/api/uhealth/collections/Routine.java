@@ -20,7 +20,7 @@ public class Routine {
     private String id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern =  "yyyy-MM-dd")
+    @DateTimeFormat(pattern =  "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE_TIME)
     private Date date;
 
     @NotBlank
