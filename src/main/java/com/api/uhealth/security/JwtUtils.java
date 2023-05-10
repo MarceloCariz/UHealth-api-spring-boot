@@ -21,11 +21,12 @@ public class JwtUtils {
     private final static String ACCESS_TOKEN_SECRET = "mysecrett0k3dsdsdsdsdsdddsdsddddn";
     private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
 
-    public static String createToken(String nombre, String email, Collection<? extends GrantedAuthority> authorities, String role){
+    public static String createToken(String id, String nombre, String email, Collection<? extends GrantedAuthority> authorities, String role){
         long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1_000; // milisegundos
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
         Map<String, Object> extra = new HashMap<>();
+        extra.put("id", id);
         extra.put("nombre", nombre);
         extra.put("roles", authorities);
         extra.put("role", role);

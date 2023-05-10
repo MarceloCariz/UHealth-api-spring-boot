@@ -62,6 +62,12 @@ public class User  {
 
     public User(){}
 
+//    public User(String username, String email, String rolName) {
+//        this.username = username;
+//        this.email = email;
+//        this.rolName = rolName;
+//    }
+
 //    public User( String username, String email, String rolName, Profile profile) {
 //        this.username = username;
 //        this.email = email;

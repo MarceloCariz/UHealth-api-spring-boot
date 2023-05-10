@@ -51,6 +51,12 @@ public class UserService {
         return userRepository.findAllBy();
     }
 
+    public Profile getProfile(String userId){
+        User user = findUserById(userId);
+        Profile profile = user.getProfile();
+        return  profile;
+    }
+
 
     public User createUser(User user){
         // Encriptar contrasena
@@ -68,7 +74,7 @@ public class UserService {
         return userCreated;
     }
 
-    public User updateUser(User userDatabase, User userToUpdate){
+    public User updateUser(User userDatabase, UserRequestUpdate userToUpdate){
 //        Profile newProfile = profileRepository.findById(userDatabase.getProfile().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Perfil no encontrado"));;
 //        if(userToUpdate.getProfile() != null){
 //            // Asignar valores al perfil nuevo

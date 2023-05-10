@@ -1,6 +1,7 @@
 package com.api.uhealth.repository;
 
 import com.api.uhealth.classes.UserRequestUpdate;
+import com.api.uhealth.collections.Profile;
 import com.api.uhealth.collections.User;
 import com.api.uhealth.interfaces.UserGet;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -15,5 +16,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
 //    UserRequestUpdate updateUser(String userId, UserRequestUpdate user);
     User findUserByEmail(String email);
+
+    Profile findProfileById(String id);
     Optional<User> findOneByEmail(String email);
 }
