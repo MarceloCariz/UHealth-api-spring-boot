@@ -46,7 +46,7 @@ public class ProductController {
     public ResponseEntity<?> createProduct(@PathVariable String categoryId,@Valid @RequestBody Product product, BindingResult result){
         //Validar si hay un campo con algun error
         if(result.hasErrors()){
-            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(result.getFieldErrors().get(1).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // Validar si existe el campo
@@ -68,7 +68,7 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(@PathVariable String id, @Valid @RequestBody Product updatedProduct, BindingResult result) {
         if(result.hasErrors()) {
             // manejar errores de validación
-            return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(result.getFieldErrors().get(1).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
         //Validar si existe el producto
         Product isProduct = productService.getProductById(id);
@@ -83,7 +83,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable String id){
         productService.deleteProduct(id);
-        return new ResponseEntity<>("Producto eliminado correctamente", HttpStatus.CREATED);
+        return new ResponseEntity<>("Producto eliminado correctamente", HttpStatus.OK);
     }
 
 

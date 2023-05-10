@@ -55,6 +55,16 @@ public class Product {
         this.category = category;
     }
 
+
+    // Contructor TEST
+    public Product(String productName, float calories, float carbs){
+        this.productName = productName.toLowerCase().trim();
+        this.calories = calories;
+        this.carbs = carbs;
+    }
+
+    public Product () {}
+
     public void setId(String id) {
         this.id = id;
     }
