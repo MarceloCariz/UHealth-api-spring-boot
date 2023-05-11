@@ -4,6 +4,7 @@ package com.api.uhealth.collections;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,7 @@ public class Routine {
     private String id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @NotNull // todo:  add
     @DateTimeFormat(pattern =  "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE_TIME)
     private Date date;
 

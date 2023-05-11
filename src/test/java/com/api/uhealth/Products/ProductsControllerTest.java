@@ -75,10 +75,10 @@ public class ProductsControllerTest {
         String categoryId = "6452a5828371cf0f2032b8c7"; // Verduras
         ResponseEntity<Product> testProduct = restTemplate.exchange(baseUrl + "/" + categoryId , HttpMethod.POST ,requestProductEntity, Product.class);
 
-
+        //Actualizar
         Product modifiedProduct = new Product("productTestModified", 30, 30);
-        //asignar category id
 
+        //asignar category id
         modifiedProduct.setCategory(testProduct.getBody().getCategory());
 
         HttpEntity<Product> requestEntityModifiedProduct = new HttpEntity<>(modifiedProduct, httpHeaders);
@@ -86,6 +86,7 @@ public class ProductsControllerTest {
         ResponseEntity<Product> modifiedProductResponse = restTemplate.exchange(baseUrl + testProduct.getBody().getId() , HttpMethod.PUT ,requestEntityModifiedProduct, Product.class);
 
         ResponseEntity<Void> responseDelete = restTemplate.exchange(baseUrl + "/" + testProduct.getBody().getId(), HttpMethod.DELETE, requestProductEntity, Void.class);
+
 
         //Comparar que el nombre no sea igual
         assertNotEquals(modifiedProductResponse.getBody().getProductName(), testProduct.getBody().getProductName());
